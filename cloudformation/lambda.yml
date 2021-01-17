@@ -50,7 +50,6 @@ Resources:
   LambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub '${Env}-${ServiceName}-lambda-role'
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -58,7 +57,11 @@ Resources:
             Principal:
               Service: lambda.amazonaws.com
             Action: sts:AssumeRole
+      Description: role execute lambda and write logs
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       Path: '/'
+      RoleName: !Sub '${Env}-${ServiceName}-lambda-role'
 
   CrontEventRule:
     Type: AWS::Events::Rule
@@ -81,23 +84,3 @@ Resources:
       FunctionName: !Ref Lambda
       Principal: events.amazonaws.com
       SourceArn: !GetAtt CrontEventRule.Arn
-# {
-#     "Version": "2012-10-17",
-#     "Statement": [
-#         {
-#             "Effect": "Allow",
-#             "Action": "logs:CreateLogGroup",
-#             "Resource": "arn:aws:logs:ap-northeast-1:021625192025:*"
-#         },
-#         {
-#             "Effect": "Allow",
-#             "Action": [
-#                 "logs:CreateLogStream",
-#                 "logs:PutLogEvents"
-#             ],
-#             "Resource": [
-#                 "arn:aws:logs:ap-northeast-1:021625192025:log-group:/aws/lambda/testTriggeredEvent:*"
-#             ]
-#         }
-#     ]
-# }
