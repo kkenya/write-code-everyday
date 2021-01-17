@@ -5,6 +5,7 @@ aws s3 mb s3://${BUCKET}
 # ソースファイルをアップデートし、s3 bucketに参照を置き換えたCFnを作成
 TEMPLATE_FILE=cloudformation/lambda.yml
 TMP_CFN=tmp-cfn.yml
+
 aws cloudformation package \
         --template-file ${TEMPLATE_FILE} \
             --s3-bucket ${BUCKET} \
@@ -20,5 +21,7 @@ aws cloudformation deploy \
                                 ServiceName=write-code-everyday \
                                     --capabilities CAPABILITY_NAMED_IAM
 
+# アップロードに利用したCFnを削除
+rm ${TMP_CFN}
 # artifactをアップロードしたs3 bucketを削除
-rm ${PACKAGED_FILE}
+aws s3 rb s3://${BUCKET} --force

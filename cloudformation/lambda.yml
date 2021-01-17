@@ -60,6 +60,27 @@ Resources:
             Action: sts:AssumeRole
       Path: '/'
 
+  CrontEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: event bridge notify everyday
+      Name: !Sub '${Env}-${ServiceName}-event-rule'
+      # RoleArn: String
+      # minute, hour, date, month, day, year
+      # ScheduleExpression: 'cron(0 10,15,20,23 * * ? *)'
+      ScheduleExpression: 'rate(5 minutes)'
+      Targets:
+        - Arn: !GetAtt Lambda.Arn
+          Id: !Sub '${Env}-${ServiceName}-lambda'
+          # RoleArn: String
+
+  EventRlePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref Lambda
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt CrontEventRule.Arn
 # {
 #     "Version": "2012-10-17",
 #     "Statement": [

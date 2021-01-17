@@ -27,10 +27,35 @@ Parameters:
     AllowedPattern: ^[a-z0-9-]+$
     Type: String
 Resources:
+  CrontEventRule:
+    Properties:
+      Description: event bridge notify everyday
+      Name:
+        Fn::Sub: ${Env}-${ServiceName}-event-rule
+      ScheduleExpression: rate(5 minutes)
+      Targets:
+      - Arn:
+          Fn::GetAtt:
+          - Lambda
+          - Arn
+        Id:
+          Fn::Sub: ${Env}-${ServiceName}-lambda
+    Type: AWS::Events::Rule
+  EventRlePermission:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: Lambda
+      Principal: events.amazonaws.com
+      SourceArn:
+        Fn::GetAtt:
+        - CrontEventRule
+        - Arn
+    Type: AWS::Lambda::Permission
   Lambda:
     Properties:
       Code:
-        S3Bucket: write-code-everyday-lambda-20210117144015
+        S3Bucket: write-code-everyday-lambda-20210117171117
         S3Key: c65d9bc920a300352c2b3b2f75c841ce
       Description: lambda function treggerd by cloud watch events
       Environment:
