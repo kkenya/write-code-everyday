@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: create lambda and trigger
+
+Parameters:
+  Env:
+    Type: String
+    Default: prd
+    AllowedValues:
+      - prd
+      - stg
+      - dev
+  ServiceName:
+    Type: String
+    AllowedPattern: ^[a-z0-9-]+$
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: System configuration
+        Parameters:
+          - Env
+          - ServiceName
+
+Mappings:
+  Constants:
+    Handler:
+      Name: index.handler
+    S3:
+      BucketName: write-code-everyday-source
+      KeyName: lambda.zip
+
+Resources:
+  Lambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: !Sub '${Env}-${ServiceName}'
+        S3Key: !FindInMap [Constants, S3, KeyName]
+      Description: lambda function treggerd by cloud watch events
+      Environment:
+        Variables:
+          env: !Ref Env
+      FunctionName: !Sub '${Env}-${ServiceName}-lambda'
+      Handler: !FindInMap [Constants, Handler, Name]
+      Role: !GetAtt LambdaRole.Arn
+      Runtime: nodejs12.x
+      Tags:
+        - Key: Name
+          Value: !Sub '${Env}-${ServiceName}-lambda'
+
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${Env}-${ServiceName}-lambda-role'
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Path: '/'
