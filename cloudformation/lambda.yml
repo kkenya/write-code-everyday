@@ -61,6 +61,33 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       Path: '/'
+      Policies:
+        - PolicyName: !Sub '${Env}-${ServiceName}-get-ssm-policy'
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - cloudwatch:Describe*
+                  - cloudwatch:Get*
+                  - cloudwatch:List*
+                Resource:
+                  - '*'
+              - Effect: Allow
+                Action:
+                  - ssm:DescribeParameters
+                Resource:
+                  - '*'
+              - Effect: Allow
+                Action:
+                  - ssm:GetParameters
+                Resource:
+                  - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${Env}/${ServiceName}/*'
+              - Effect: Allow
+                Action:
+                  - kms:Decrypt
+                Resource:
+                  - !Sub 'arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/6ab7520c-e7ac-46f3-8bda-90b27df762cf'
       RoleName: !Sub '${Env}-${ServiceName}-lambda-role'
 
   CrontEventRule:
