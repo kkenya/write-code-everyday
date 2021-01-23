@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # artifactをアップロードするs3 bucketを作成
 BUCKET="write-code-everyday-lambda-`date +%Y%m%d%H%M%S`"
 aws s3 mb s3://${BUCKET}
