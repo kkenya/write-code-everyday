@@ -28,12 +28,12 @@ exports.handler = async (/* event */) => {
   //   .promise()
   //   .catch((e) => console.error(e));
   const parameters = await mock(config);
-  // console.log('[ssm#getParamerters', parameters);
+  console.log('[ssm#getParamerters', parameters);
   const [webHookUrlParam] = parameters.Parameters;
   if (!webHookUrlParam) {
     throw new Error('not found');
   }
-  // console.log(webHookUrlParam.Value);
+  console.log(webHookUrlParam.Value);
 
   // const data = {
   //   username: "write-code-everyday",

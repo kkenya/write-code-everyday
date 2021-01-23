@@ -1,16 +1,19 @@
 {
   "name": "write-code-everyday",
   "version": "1.0.0",
-  "description": "",
+  "description": "write code every bot",
   "main": "index.js",
   "scripts": {
     "zip": "zip -jr dist.zip dist",
     "local": "AWS_REGION=ap-northeast-1 node tests/index.js",
     "test": "echo \"test",
     "build": "tsc",
-    "fix": "run-s fix:eslint fix:prettier",
-    "fix:eslint": "eslint --fix './{src,__tests__}/**/*.ts'",
+    "lint": "run-s lint:prettier lint:eslint",
+    "lint:prettier": "prettier --check './{src,__tests__}/**/*.ts'",
+    "lint:eslint": "eslint './{src,__tests__}/**/*.ts'",
+    "fix": "run-s fix:prettier fix:eslint",
     "fix:prettier": "prettier --write './{src,__tests__}/**/*.ts'",
+    "fix:eslint": "eslint --fix './{src,__tests__}/**/*.ts'",
     "postinstall": "husky install"
   },
   "keywords": [],
@@ -36,6 +39,10 @@
   "dependencies": {
     "aws-sdk": "^2.831.0",
     "node-fetch": "^2.6.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kkenya/write-code-everyday.git"
   },
   "private": true
 }
