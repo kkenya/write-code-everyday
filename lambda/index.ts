@@ -1,23 +1,20 @@
-const AWS = require("aws-sdk");
-const https = require("https");
-const fetch = require("node-fetch");
-const util = require("util");
-const { promisify } = util;
+import AWS from "aws-sdk";
+// const fetch = require("node-fetch");
 
-const SSM_VERSION = "2014-11-06";
+// const SSM_VERSION = "2014-11-06";
 
-const ssm = new AWS.SSM({ apiVersion: SSM_VERSION });
+// const ssm = new AWS.SSM({ apiVersion: SSM_VERSION });
 
-exports.handler = async (event) => {
-  return new Promise(async (resolve, reject) => {
-    const parameterNames = {
+exports.handler = async (/* event */) => {
+  return new Promise(async (/* resolve, reject */) => {
+    const config = {
       Names: ["/prd/write-code-everyday/slack-webhook-url"],
       WithDecryption: true,
     };
-    const mock = async () => ({
+    const mock = async (parameterNames: AWS.SSM.Types.GetParametersRequest) => ({
       Parameters: [
         {
-          Name: "testParameter",
+          Name: parameterNames,
           Type: "SecureString",
           Value: "test",
           Version: 1,
@@ -28,20 +25,23 @@ exports.handler = async (event) => {
       ]
     });
     // const parameters = await ssm
-    //   .getParameters(parameterNames)
+    //   .getParameters(config)
     //   .promise()
     //   .catch((e) => console.error(e));
-    const parameters = await mock(parameterNames);
+    const parameters = await mock(config);
     console.log("[ssm#getParamerters", parameters);
     const [webHookUrlParam] = parameters.Parameters;
-
-    const data = {
-      username: "write-code-everyday",
-      text: "write code",
-      icon_emoji: ":fire:",
-    };
-
+    if(!webHookUrlParam){
+      throw new Error('not found')
+    }
     console.log(webHookUrlParam.Value);
+
+    // const data = {
+    //   username: "write-code-everyday",
+    //   text: "write code",
+    //   icon_emoji: ":fire:",
+    // };
+
     // const res = await fetch(webHookUrlParam.Name, {
     //   method: "post",
     //   body: JSON.stringify(data),
