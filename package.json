@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "zip": "zip -jr lambda.zip lambda",
+    "local": "AWS_REGION=ap-northeast-1 node tests/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,5 +13,11 @@
   "license": "ISC",
   "engines": {
     "node": "12.x"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.831.0"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.1"
   }
 }
