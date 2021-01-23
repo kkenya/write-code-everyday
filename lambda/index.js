@@ -14,15 +14,26 @@ exports.handler = async (event) => {
       Names: ["/prd/write-code-everyday/slack-webhook-url"],
       WithDecryption: true,
     };
-    const parameters = await ssm
-      .getParameters(parameterNames)
-      .promise()
-      .catch((e) => console.error(e));
-    console.log("[ssm#getParamerters", parameters.Parameters);
+    const mock = async () => ({
+      Parameters: [
+        {
+          Name: "testParameter",
+          Type: "SecureString",
+          Value: "test",
+          Version: 1,
+          LastModifiedDate: "2021-01-17T13:09:12.036Z",
+          ARN: "test",
+          DataType: "text",
+        },
+      ]
+    });
+    // const parameters = await ssm
+    //   .getParameters(parameterNames)
+    //   .promise()
+    //   .catch((e) => console.error(e));
+    const parameters = await mock(parameterNames);
+    console.log("[ssm#getParamerters", parameters);
     const [webHookUrlParam] = parameters.Parameters;
-
-    console.log("----------------params---------------");
-    console.log(parameterNames);
 
     const data = {
       username: "write-code-everyday",
@@ -30,17 +41,18 @@ exports.handler = async (event) => {
       icon_emoji: ":fire:",
     };
 
-    const res = await fetch(webHookUrlParam.Name, {
-      method: "post",
-      body: JSON.stringify(data),
-      headers: { "Content-Type": "application/json" },
-    });
-    if (!res.ok) {
-      console.error(res);
-    }
-    console.log(res);
-    const json = await res.json();
+    console.log(webHookUrlParam.Value);
+    // const res = await fetch(webHookUrlParam.Name, {
+    //   method: "post",
+    //   body: JSON.stringify(data),
+    //   headers: { "Content-Type": "application/json" },
+    // });
+    // if (!res.ok) {
+    //   console.error(res);
+    // }
+    // console.log(res);
+    // const json = await res.json();
 
-    console.log(json);
+    // console.log(json);
   });
 };
