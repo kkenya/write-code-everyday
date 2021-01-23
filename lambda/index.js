@@ -1,53 +1,58 @@
-const AWS = require('aws-sdk')
-const https = require('https');
+const AWS = require("aws-sdk");
+const https = require("https");
+const fetch = require("node-fetch");
+const util = require("util");
+const { promisify } = util;
 
-const ssm = new AWS.SSM();
+const SSM_VERSION = "2014-11-06";
+
+const ssm = new AWS.SSM({ apiVersion: SSM_VERSION });
 
 exports.handler = async (event) => {
-  return new Promise((resolve, reject) => {
-    var params = {
-      Names: [
-        '/prd/write-code-everyday/slack-webhook-url'
-      ],
-      WithDecryption: true
+  return new Promise(async (resolve, reject) => {
+    const parameterNames = {
+      Names: ["/prd/write-code-everyday/slack-webhook-url"],
+      WithDecryption: true,
     };
-    ssm.getParameters(params, function(err, data) {
-      console.log('[ssm#getParamerters', data)
-      if (err) {
-        console.error(err, err.stack);
-        return reject(err)
-      }
-
-      const meta = JSON.stringify({
-        username: 'node_bot',
-        text: 'write code',
-        icon_emoji: ':sunglasses:',
-      });
-      const options = {
-        hostname: 'hooks.slack.com',
-        port: 443,
-        path: '/services/TK98YBPUL/B01JUB2714M/I9V2HkL1XwY8vT2oCT2IhCS0',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': Buffer.byteLength(meta),
+    const mock = async () => ({
+      Parameters: [
+        {
+          Name: "testParameter",
+          Type: "SecureString",
+          Value: "test",
+          Version: 1,
+          LastModifiedDate: "2021-01-17T13:09:12.036Z",
+          ARN: "test",
+          DataType: "text",
         },
-      };
-
-      const req = https.request(options, (res) => {
-        if (res.statusCode === 200) {
-          return console.log('[request#success]' + res.statusCode);
-        }
-        console.log('[request#failed]' + res.statusCode);
-      });
-
-      req.on('error', (e) => {
-        console.error(e);
-      });
-
-      req.write(data);
-      req.end();
-      resolve();
+      ]
     });
+    // const parameters = await ssm
+    //   .getParameters(parameterNames)
+    //   .promise()
+    //   .catch((e) => console.error(e));
+    const parameters = await mock(parameterNames);
+    console.log("[ssm#getParamerters", parameters);
+    const [webHookUrlParam] = parameters.Parameters;
+
+    const data = {
+      username: "write-code-everyday",
+      text: "write code",
+      icon_emoji: ":fire:",
+    };
+
+    console.log(webHookUrlParam.Value);
+    // const res = await fetch(webHookUrlParam.Name, {
+    //   method: "post",
+    //   body: JSON.stringify(data),
+    //   headers: { "Content-Type": "application/json" },
+    // });
+    // if (!res.ok) {
+    //   console.error(res);
+    // }
+    // console.log(res);
+    // const json = await res.json();
+
+    // console.log(json);
   });
-}
+};
