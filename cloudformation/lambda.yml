@@ -34,7 +34,7 @@ Resources:
   Lambda:
     Type: AWS::Lambda::Function
     Properties:
-      Code: '../lambda'
+      Code: '../dist'
       Description: lambda function treggerd by cloud watch events
       Environment:
         Variables:
