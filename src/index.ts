@@ -5,29 +5,30 @@ import AWS from 'aws-sdk';
 
 // const ssm = new AWS.SSM({ apiVersion: SSM_VERSION });
 
-exports.handler = async (/* event */) => {
+const mock = (parameterNames: AWS.SSM.Types.GetParametersRequest) => ({
+  Parameters: [
+    {
+      Name: parameterNames,
+      Type: 'SecureString',
+      Value: 'test',
+      Version: 1,
+      LastModifiedDate: '2021-01-17T13:09:12.036Z',
+      ARN: 'test',
+      DataType: 'text',
+    },
+  ],
+});
+
+export const handler = (/* event */) => {
   const config = {
     Names: ['/prd/write-code-everyday/slack-webhook-url'],
     WithDecryption: true,
   };
-  const mock = async (parameterNames: AWS.SSM.Types.GetParametersRequest) => ({
-    Parameters: [
-      {
-        Name: parameterNames,
-        Type: 'SecureString',
-        Value: 'test',
-        Version: 1,
-        LastModifiedDate: '2021-01-17T13:09:12.036Z',
-        ARN: 'test',
-        DataType: 'text',
-      },
-    ],
-  });
   // const parameters = await ssm
   //   .getParameters(config)
   //   .promise()
   //   .catch((e) => console.error(e));
-  const parameters = await mock(config);
+  const parameters = mock(config);
   console.log('[ssm#getParamerters', parameters);
   const [webHookUrlParam] = parameters.Parameters;
   if (!webHookUrlParam) {
