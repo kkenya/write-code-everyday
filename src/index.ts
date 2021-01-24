@@ -51,5 +51,5 @@ export const handler = async (/* event */): Promise<void> => {
   if (!res.ok) {
     console.error('[slack#notify]failed: ', res);
   }
-  console.log('[slack#notify]succeeded: ', res.body);
+  console.log('[slack#notify]succeeded');
 };

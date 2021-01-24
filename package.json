@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "zip": "zip -jr dist.zip dist",
-    "local": "npm run build && AWS_REGION=ap-northeast-1 node __tests__/local.js",
+    "local": "npm run build && AWS_REGION=ap-northeast-1 node local/index.js",
     "test": "AWS_REGION=ap-northeast-1 jest",
     "build": "tsc",
     "lint": "run-s lint:prettier lint:eslint",

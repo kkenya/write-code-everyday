@@ -1,6 +1,6 @@
 import assert from 'assert';
 import sinon from 'sinon';
-import { handler, awsSdk, slackSdk, SLACK } from '../src';
+import { handler, awsSdk, slackSdk } from '../src';
 
 const sandbox = sinon.createSandbox();
 
@@ -39,15 +39,18 @@ describe('lambda function', () => {
         .expects('notify')
         .once()
         .withArgs('https://hooks.slack.com/services/XXX1/XXX2/XXXX3', {
-          status: 200,
-          statusText: 'OK',
+          username: 'write-code-everyday',
+          text: 'write code',
+          icon_emoji: ':evergreen_tree:',
         })
-        .resolves({});
+        .resolves({
+          ok: true,
+        });
 
       try {
         await handler();
       } catch (e) {
-        assert.fail();
+        assert.fail(e);
       }
       assert(true);
       ssmMock.verify();
