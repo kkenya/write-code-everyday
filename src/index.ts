@@ -1,57 +1,55 @@
 import AWS from 'aws-sdk';
-// const fetch = require("node-fetch");
+import fetch, { Response } from 'node-fetch';
 
-// const SSM_VERSION = "2014-11-06";
+const SSM_VERSION = '2014-11-06';
+export const SLACK = {
+  userName: 'write-code-everyday',
+  emoji: {
+    fire: ':evergreen_tree:',
+  },
+  text: 'write code',
+} as const;
 
-// const ssm = new AWS.SSM({ apiVersion: SSM_VERSION });
-
-const mock = (parameterNames: AWS.SSM.Types.GetParametersRequest) => ({
-  Parameters: [
-    {
-      Name: parameterNames,
-      Type: 'SecureString',
-      Value: 'test',
-      Version: 1,
-      LastModifiedDate: '2021-01-17T13:09:12.036Z',
-      ARN: 'test',
-      DataType: 'text',
-    },
-  ],
+const initAwsSdk = () => ({
+  ssm: new AWS.SSM({ apiVersion: SSM_VERSION }),
 });
+initAwsSdk();
+export const awsSdk = initAwsSdk();
 
-export const handler = (/* event */) => {
-  const config = {
-    Names: ['/prd/write-code-everyday/slack-webhook-url'],
+export const initSlackSdk = (): {
+  notify: (url: string, payload: { [k: string]: any }) => Promise<Response>;
+} => ({
+  notify: async (url: string, payload: { [k: string]: any }) =>
+    fetch(url, {
+      method: 'post',
+      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'application/json' },
+    }),
+});
+export const slackSdk = initSlackSdk();
+
+export const handler = async (/* event */): Promise<void> => {
+  const param = {
+    // todo env
+    Name: '/prd/write-code-everyday/slack-webhook-url',
     WithDecryption: true,
   };
-  // const parameters = await ssm
-  //   .getParameters(config)
-  //   .promise()
-  //   .catch((e) => console.error(e));
-  const parameters = mock(config);
-  console.log('[ssm#getParamerters', parameters);
-  const [webHookUrlParam] = parameters.Parameters;
-  if (!webHookUrlParam) {
-    throw new Error('not found');
+  const parameter = await awsSdk.ssm.getParameter(param).promise();
+
+  if (!parameter || !parameter.Parameter?.Value) {
+    throw new Error('parameter not found');
   }
-  console.log(webHookUrlParam.Value);
 
-  // const data = {
-  //   username: "write-code-everyday",
-  //   text: "write code",
-  //   icon_emoji: ":fire:",
-  // };
+  console.log('[ssm#getParamerter', parameter);
+  const webHookUrl = parameter.Parameter.Value;
 
-  // const res = await fetch(webHookUrlParam.Name, {
-  //   method: "post",
-  //   body: JSON.stringify(data),
-  //   headers: { "Content-Type": "application/json" },
-  // });
-  // if (!res.ok) {
-  //   console.error(res);
-  // }
-  // console.log(res);
-  // const json = await res.json();
-
-  // console.log(json);
+  const res = await slackSdk.notify(webHookUrl, {
+    username: SLACK.userName,
+    text: SLACK.text,
+    icon_emoji: SLACK.emoji.fire,
+  });
+  if (!res.ok) {
+    console.error('[slack#notify]failed: ', res);
+  }
+  console.log('[slack#notify]succeeded: ', res.body);
 };
