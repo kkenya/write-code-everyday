@@ -4,8 +4,8 @@
   "description": "write code every bot",
   "main": "index.js",
   "scripts": {
-    "zip": "zip -jr dist.zip dist",
     "local": "npm run build && AWS_REGION=ap-northeast-1 node local/index.js",
+    "deploy": "npm run build && ./deploy.sh",
     "test": "AWS_REGION=ap-northeast-1 jest",
     "build": "tsc",
     "lint": "run-s lint:prettier lint:eslint",
