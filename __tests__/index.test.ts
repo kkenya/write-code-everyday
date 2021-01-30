@@ -1,7 +1,7 @@
 import assert from 'assert';
 import sinon from 'sinon';
 import { handler } from '../src';
-import { sdk } from '../src/lib';
+import { context } from '../src/state';
 
 const sandbox = sinon.createSandbox();
 
@@ -13,7 +13,7 @@ describe('lambda function', () => {
   describe('hander', () => {
     test('正しく終了すること', async () => {
       const parameterName = '/prd/write-code-everyday/slack-webhook-url';
-      const ssmMock = sandbox.mock(sdk.aws.ssm);
+      const ssmMock = sandbox.mock(context.sdk.aws.ssm);
       ssmMock
         .expects('getParameter')
         .once()
@@ -35,7 +35,7 @@ describe('lambda function', () => {
           }),
         });
 
-      const slackSdkMock = sandbox.mock(sdk.slack);
+      const slackSdkMock = sandbox.mock(context.sdk.slack);
       slackSdkMock
         .expects('notify')
         .once()

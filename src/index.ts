@@ -1,4 +1,4 @@
-import { sdk } from './lib';
+import { context } from './state';
 import { SLACK, PARAMETER_STORE } from './config/constants';
 
 export const handler = async (/* event */): Promise<void> => {
@@ -6,7 +6,7 @@ export const handler = async (/* event */): Promise<void> => {
     Name: PARAMETER_STORE.webHook,
     WithDecryption: true,
   };
-  const webHookUrl = await sdk.aws.ssm.getParameter(param).promise();
+  const webHookUrl = await context.sdk.aws.ssm.getParameter(param).promise();
 
   if (!webHookUrl.Parameter?.Value) {
     throw new Error('parameter not found');
@@ -14,7 +14,7 @@ export const handler = async (/* event */): Promise<void> => {
 
   console.log('[ssm#getParamerter', webHookUrl);
 
-  const res = await sdk.slack.notify(webHookUrl.Parameter.Value, {
+  const res = await context.sdk.slack.notify(webHookUrl.Parameter.Value, {
     username: SLACK.userName,
     text: SLACK.text,
     icon_emoji: SLACK.emoji.fire,
