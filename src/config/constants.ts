@@ -3,7 +3,7 @@ export const SSM_VERSION = '2014-11-06';
 export const SLACK = {
   userName: 'write-code-everyday',
   emoji: {
-    fire: ':evergreen_tree:',
+    fire: ':fire:',
   },
   text: 'write code',
 } as const;
