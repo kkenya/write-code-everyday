@@ -42,7 +42,7 @@ describe('lambda function', () => {
         .withArgs('https://hooks.slack.com/services/XXX1/XXX2/XXXX3', {
           username: 'write-code-everyday',
           text: 'write code',
-          icon_emoji: ':evergreen_tree:',
+          icon_emoji: ':fire:',
         })
         .resolves({
           ok: true,
