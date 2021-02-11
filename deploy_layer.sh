@@ -16,5 +16,5 @@ aws lambda publish-layer-version \
     --compatible-runtimes nodejs12.x
 
 # artifactをアップロードしたs3 bucketを削除
-#aws s3 rb s3://${BUCKET} --force
+aws s3 rb s3://${BUCKET} --force
 

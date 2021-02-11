@@ -1,6 +1,6 @@
 FROM node:12-slim
 
-ENV HUSKY_SKIP_INSTALL true 
+ENV HUSKY_SKIP_INSTALL true
 ENV NODE_ENV production
 
 RUN apt-get update && apt-get install -y \

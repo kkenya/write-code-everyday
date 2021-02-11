@@ -41,7 +41,7 @@ describe('lambda function', () => {
         .once()
         .withArgs('https://hooks.slack.com/services/XXX1/XXX2/XXXX3', {
           username: 'write-code-everyday',
-          text: 'write code',
+          text: 'Write code',
           icon_emoji: ':fire:',
         })
         .resolves({

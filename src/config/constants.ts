@@ -5,7 +5,7 @@ export const SLACK = {
   emoji: {
     fire: ':fire:',
   },
-  text: 'write code',
+  text: 'Write code',
 } as const;
 
 export const PARAMETER_STORE = {

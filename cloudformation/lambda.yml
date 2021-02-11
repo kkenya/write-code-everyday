@@ -13,6 +13,8 @@ Parameters:
   ServiceName:
     Type: String
     AllowedPattern: ^[a-z0-9-]+$
+  LayerArn:
+    Type: String
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -21,6 +23,7 @@ Metadata:
         Parameters:
           - Env
           - ServiceName
+          - LayerArn
 
 Mappings:
   Constants:
@@ -46,6 +49,8 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub '${Env}-${ServiceName}-lambda'
+      Layers:
+        - !Sub '${LayerArn}'
 
   LambdaExecutionRole:
     Type: AWS::IAM::Role
