@@ -21,6 +21,7 @@ aws cloudformation deploy \
     --parameter-overrides \
     Env=prd \
     ServiceName=write-code-everyday \
+    LayerArn="arn:aws:lambda:ap-northeast-1:021625192025:layer:write-code-everyday-dependencies:1" \
     --capabilities CAPABILITY_NAMED_IAM
 
 # artifactをアップロードしたs3 bucketを削除
