@@ -12,8 +12,6 @@ export const handler = async (/* event */): Promise<void> => {
     throw new Error('parameter not found');
   }
 
-  console.log('[ssm#getParamerter', webHookUrl);
-
   const res = await context.sdk.slack.notify(webHookUrl.Parameter.Value, {
     username: SLACK.userName,
     text: SLACK.text,
