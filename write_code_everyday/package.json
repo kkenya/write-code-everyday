@@ -5,19 +5,22 @@
   "main": "app.js",
   "author": "SAM CLI",
   "license": "MIT",
-  "dependencies": {
-    "axios": "^0.21.1"
-  },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cp package* dist/",
     "test": "mocha tests/unit/",
     "fix": "run-s fix:prettier fix:eslint",
     "fix:prettier": "prettier --write './{src,tests}/**/*.ts'",
     "fix:eslint": "eslint --fix './{src,tests}/**/*.ts'"
   },
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.76",
     "@types/node": "^15.3.0",
+    "@types/node-fetch": "^2.5.10",
+    "@typescript-eslint/eslint-plugin": "^4.23.0",
+    "@typescript-eslint/parser": "^4.23.0",
     "aws-sdk": "^2.907.0",
     "chai": "^4.2.0",
     "eslint": "^7.26.0",
