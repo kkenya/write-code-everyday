@@ -1,6 +1,5 @@
 node_modules
 dist
-lambda.zip
 
 # aws sam
 .aws-sam
