@@ -14,23 +14,21 @@ Resources:
   WriteCodeEverydayFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: write-code-everyday/dist
+      CodeUri: write_code_everyday/dist
       Handler: app.lambdaHandler
       Runtime: nodejs14.x
       Events:
-        WriteCodeEveryday:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+        Schedule:
+          Type: Schedule # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            Path: /
-            Method: get
+            Schedule: rate(5 minutes) # 'cron(0 10,15,20,23 * * ? *)'
+            Name: DailySchedule
+            Description: execute daily
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  WriteCodeEverydayApi:
-    Description: 'API Gateway endpoint URL for Prod stage for Write Code Everyday function'
-    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/'
   WriteCodeEverydayFunction:
     Description: 'Write Code Everyday Lambda Function ARN'
     Value: !GetAtt WriteCodeEverydayFunction.Arn
