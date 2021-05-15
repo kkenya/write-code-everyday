@@ -11,6 +11,9 @@ type slackSdk = {
   ) => Promise<Response>;
 };
 
+/**
+ * https://api.slack.com/messaging/sending
+ */
 export const init = (): slackSdk => ({
   notify: async (url, payload) =>
     fetch(url, {

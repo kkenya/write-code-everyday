@@ -42,8 +42,8 @@ Resources:
         Schedule:
           Type: Schedule # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            Schedule: rate(5 minutes)
-            # Schedule: 'cron(0 10,15,20,23 * * ? *)'
+            # Schedule: rate(5 minutes)
+            Schedule: 'cron(0 10,15,20,23 * * ? *)'
             Name: DailySchedule
             Description: execute daily
       Policies: # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html
