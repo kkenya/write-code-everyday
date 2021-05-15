@@ -8,3 +8,4 @@ s3_prefix = "write-code-everyday"
 region = "ap-northeast-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
+parameter_overrides = "Env=\"prd\" ServiceName=\"write-code-everyday\""
