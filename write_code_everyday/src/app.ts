@@ -1,29 +1,17 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { context } from './context';
-import { SLACK, PARAMETER_STORE } from './config/constants';
+import { SLACK } from './config/constants';
+import { notify } from './repositories/slack';
+import { getWebhookUrl } from './repositories/ssm';
 
 export const lambdaHandler: APIGatewayProxyHandler = async (
   event /*context*/
 ) => {
-  const param = {
-    Name: PARAMETER_STORE.webHook,
-    WithDecryption: true,
-  };
-  const webHookUrl = await context.sdk.aws.ssm.getParameter(param).promise();
-
-  if (!webHookUrl.Parameter?.Value) {
-    throw new Error('parameter not found');
-  }
-
-  const res = await context.sdk.slack.notify(webHookUrl.Parameter.Value, {
+  const webhookUrl = await getWebhookUrl();
+  await notify(webhookUrl, {
     username: SLACK.userName,
     text: SLACK.text,
     icon_emoji: SLACK.emoji.fire,
   });
-  if (!res.ok) {
-    console.error('[slack#notify]failed: ', res);
-  }
-  console.log('[slack#notify]succeeded');
 
   return {
     statusCode: 200,
