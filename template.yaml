@@ -17,6 +17,7 @@ Parameters:
     Type: String
     Default: write-code-everyday
     AllowedPattern: ^[a-z0-9-]+$
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
